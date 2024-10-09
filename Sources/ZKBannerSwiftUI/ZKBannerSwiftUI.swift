@@ -2,21 +2,25 @@
 // https://docs.swift.org/swift-book
 import SwiftUI
 import SDWebImageSwiftUI
+import Combine
 
 public struct ZKBannerView: View {
     
     let imageArr: Array<String>
-    let width: CGFloat = UIScreen.main.bounds.width - 40
-    let height: CGFloat = 200
-    @State var offset: CGFloat
+    let width: CGFloat
+    let height: CGFloat
+    @State var offset: CGFloat = .zero
     @State var currentIndex: Int
+    public var autoPlay: Bool
+    private var timer: Publishers.Autoconnect<Timer.TimerPublisher>
     
-    private let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
-    
-    public init(imageArr: Array<String>, offset: CGFloat = .zero, currentIndex: Int = 0) {
+    public init(imageArr: Array<String>,  currentIndex: Int = 0, height: CGFloat = 200, width: CGFloat = UIScreen.main.bounds.width - 40, autoPlay: Bool = false, loop: Double = 5) {
         self.imageArr = imageArr
-        self.offset = offset
         self.currentIndex = currentIndex
+        self.height = height
+        self.width = width
+        self.autoPlay = autoPlay
+        self.timer = Timer.publish(every: loop, on: .main, in: .common).autoconnect()
     }
     
     public var body: some View {
@@ -58,13 +62,15 @@ public struct ZKBannerView: View {
                 })
         )
         .onReceive(timer) { _ in
-            var newIndex = 0
-            if currentIndex == imageArr.count - 1 {
-                newIndex = 0
-            } else {
-                newIndex = currentIndex + 1
+            if autoPlay {
+                var newIndex = 0
+                if currentIndex == imageArr.count - 1 {
+                    newIndex = 0
+                } else {
+                    newIndex = currentIndex + 1
+                }
+                changeBanner(newIndex: newIndex)
             }
-            changeBanner(newIndex: newIndex)
         }
     }
     

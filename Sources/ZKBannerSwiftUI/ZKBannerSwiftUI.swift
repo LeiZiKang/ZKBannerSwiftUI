@@ -10,16 +10,22 @@ public struct ZKBannerView: View {
     let width: CGFloat
     let height: CGFloat
     @State var offset: CGFloat = .zero
-    @State var currentIndex: Int
-    public var autoPlay: Bool
+    @State public var currentIndex: Int
+    public var currentBinding: Binding<Int> {
+          Binding(
+              get: { self.currentIndex },
+              set: { self.currentIndex = $0 }
+          )
+      }
+    @Binding public var autoPlay: Bool
     private var timer: Publishers.Autoconnect<Timer.TimerPublisher>
     
-    public init(imageArr: Array<String>,  currentIndex: Int = 0, height: CGFloat = 200, width: CGFloat = UIScreen.main.bounds.width - 40, autoPlay: Bool = false, loop: Double = 5) {
+    public init(imageArr: Array<String> , height: CGFloat = 200, width: CGFloat = UIScreen.main.bounds.width - 40, autoPlay: Binding<Bool> , loop: Double = 5) {
         self.imageArr = imageArr
-        self.currentIndex = currentIndex
+        self.currentIndex = 0
         self.height = height
         self.width = width
-        self.autoPlay = autoPlay
+        _autoPlay = autoPlay
         self.timer = Timer.publish(every: loop, on: .main, in: .common).autoconnect()
     }
     
@@ -38,6 +44,7 @@ public struct ZKBannerView: View {
             DragGesture()
                 .onChanged({ value in
                     offset = value.translation.width
+                    autoPlay = false
                 })
                 .onEnded({ value in
                     var newIndex = 0
@@ -90,12 +97,12 @@ public struct ZKBannerView: View {
     }
 }
 
-#Preview {
-    let images = [
-         "https://images.unsplash.com/photo-1720048171596-6a7c81662434?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-         "https://img0.baidu.com/it/u=597753977,1250737874&fm=253&fmt=auto&app=120&f=JPEG?w=801&h=500",
-         "https://img1.baidu.com/it/u=1795072984,4227544674&fm=253&fmt=auto&app=120&f=JPEG?w=654&h=363",
-         "https://i2.hdslb.com/bfs/archive/b4c0c3907e1f64c2de50edb35a7524d3af48e0f8.jpg"
-     ]
-    ZKBannerView(imageArr: images)
-}
+//#Preview {
+//    let images = [
+//         "https://images.unsplash.com/photo-1720048171596-6a7c81662434?q=80&w=2787&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+//         "https://img0.baidu.com/it/u=597753977,1250737874&fm=253&fmt=auto&app=120&f=JPEG?w=801&h=500",
+//         "https://img1.baidu.com/it/u=1795072984,4227544674&fm=253&fmt=auto&app=120&f=JPEG?w=654&h=363",
+//         "https://i2.hdslb.com/bfs/archive/b4c0c3907e1f64c2de50edb35a7524d3af48e0f8.jpg"
+//     ]
+//    ZKBannerView(imageArr: images)
+//}

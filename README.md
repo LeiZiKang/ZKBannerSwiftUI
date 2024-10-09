@@ -1,6 +1,6 @@
 #  ZKBannerSwiftUI
 
-使用原生swiftUI实现的自动轮播Banner
+使用原生swiftUI实现的自动轮播Banner，版本限制： iOS 14及以上（主要因为SDWebImageSwiftUI库最低兼容IOS14，当然你也可以替换依赖来源来降低版本）
 
 ## 功能
 
@@ -46,4 +46,6 @@ struct ContentView: View {
 ```
 ## 灵感来源
 【SwiftUI教程之无限自动轮播图-哔哩哔哩】 https://b23.tv/HkX8Oj2
+
+## 效果
 

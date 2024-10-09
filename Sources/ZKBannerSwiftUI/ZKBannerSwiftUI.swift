@@ -11,6 +11,8 @@ public struct ZKBannerView: View {
     @State var offset: CGFloat
     @State var currentIndex: Int
     
+    private let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
+    
     public init(imageArr: Array<String>, offset: CGFloat = .zero, currentIndex: Int = 0) {
         self.imageArr = imageArr
         self.offset = offset
@@ -52,19 +54,33 @@ public struct ZKBannerView: View {
                         }
                     }
                     
-                    withAnimation(.linear(duration: 0.5)) {
-                        currentIndex = newIndex
-                        offset = .zero
-                    }
+                    changeBanner(newIndex: newIndex)
                 })
         )
+        .onReceive(timer) { _ in
+            var newIndex = 0
+            if currentIndex == imageArr.count - 1 {
+                newIndex = 0
+            } else {
+                newIndex = currentIndex + 1
+            }
+            changeBanner(newIndex: newIndex)
+        }
     }
     
+    // 前台展示的3张图片
     func getImges() -> [String] {
         let currentImage = imageArr[currentIndex]
         let preImage = currentIndex == 0 ? imageArr.last! : imageArr[currentIndex - 1]
         let nextImage = currentIndex == imageArr.count - 1 ? imageArr.first! : imageArr[currentIndex + 1]
         return [preImage, currentImage, nextImage]
+    }
+    // 轮播动画
+    func changeBanner(newIndex: Int) {
+        withAnimation(.linear(duration: 0.5)) {
+            currentIndex = newIndex
+            offset = .zero
+        }
     }
 }
 

@@ -5,17 +5,25 @@ import PackageDescription
 
 let package = Package(
     name: "ZKBannerSwiftUI",
+    platforms: [.iOS(.v14)],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "ZKBannerSwiftUI",
             targets: ["ZKBannerSwiftUI"]),
     ],
+    dependencies: [
+        .package(url: "https://github.com/SDWebImage/SDWebImageSwiftUI.git", .upToNextMajor(from: "3.0.0"))
+    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "ZKBannerSwiftUI"),
+            name: "ZKBannerSwiftUI",
+            dependencies: [
+                .product(name: "SDWebImageSwiftUI", package: "SDWebImageSwiftUI")
+            ]
+        ),
 
     ]
 )
